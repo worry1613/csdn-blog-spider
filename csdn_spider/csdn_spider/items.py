@@ -7,8 +7,17 @@
 
 import scrapy
 
-
 class CsdnSpiderItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    """
+    blog内容
+    """
+    _id = scrapy.Field()        #blog id
+    title = scrapy.Field()      #blog title
+    time = scrapy.Field()       #blog create time
+    tags = scrapy.Field()       #blog tags
+    read = scrapy.Field()       #blog read
+    content = scrapy.Field()    #blog main content
+    writer = scrapy.Field()     #blog writer id
+
