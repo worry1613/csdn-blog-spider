@@ -21,3 +21,15 @@ class CsdnSpiderItem(scrapy.Item):
     content = scrapy.Field()    #blog main content
     writer = scrapy.Field()     #blog writer id
 
+class CsdnSpiderUserItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    """
+    blog 作者
+    """
+    _id = scrapy.Field()
+    # user = scrapy.Field()
+    pv = scrapy.Field()         #访问
+    fen = scrapy.Field()        #积分
+    rank = scrapy.Field()       #排名
+    level = scrapy.Field()      #等级
