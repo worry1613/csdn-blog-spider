@@ -112,3 +112,5 @@ BLOGKEY = 'csdn:blog'
 USERKEY = 'csdn:user'
 BLOGKEYOK = 'csdn:blog:ok'
 USERKEYOK = 'csdn:user:ok'
+
+PROXY_FILE = 'proxy//proxy.txt'
