@@ -60,9 +60,9 @@ ROBOTSTXT_OBEY = True
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent': None,
     # 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware':None,
-    'csdn_spider.middleware.RotateUserAgentMiddleware': 400,
-    'csdn_spider.middleware.ProxyMiddleWare': 255,
-    'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': None,
+    'csdn_spider.middlewares.RotateUserAgentMiddleware': 400,
+    # 'csdn_spider.middlewares.ProxyMiddleWare': 255,
+    # 'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': None,
 }
 SCHEDULER_PERSIST = True
 
@@ -76,7 +76,7 @@ SCHEDULER_PERSIST = True
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'csdn_spider.pipelines.CsdnSpiderPipeline': 300,
-    'csdn_spider.pipelines.RedisPipeline': 400
+    'scrapy_redis.pipelines.RedisPipeline': 400
 }
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -103,6 +103,7 @@ DOWNLOAD_HANDLERS = {'S3': None}
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
+REDIS_DB = 0
 REDIS_URL = 'redis://root@localhost:6379'
 
 LOG_FILE = './scrapy.log'
@@ -114,3 +115,4 @@ BLOGKEYOK = 'csdn:blog:ok'
 USERKEYOK = 'csdn:user:ok'
 
 PROXY_FILE = 'proxy//proxy.txt'
+BLOGFILE_DIR = 'files/'
