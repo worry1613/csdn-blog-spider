@@ -20,11 +20,7 @@ from csdn_spider.items import CsdnSpiderItem
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-import hiredis
-import redis
-pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
-r = redis.StrictRedis(connection_pool=pool)
-p = r.pipeline()
+from blogtypespider import r, p
 
 class BlogSpider(Spider):
 # class BlogSpider(RedisSpider):
