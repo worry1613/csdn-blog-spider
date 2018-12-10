@@ -75,7 +75,7 @@ SCHEDULER_PERSIST = True
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'csdn_spider.pipelines.CsdnSpiderPipeline': 300,
+    'csdn_spider.pipelines.CsdnSpiderPipelineMongo': 300,
     'scrapy_redis.pipelines.RedisPipeline': 400
 }
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -116,3 +116,5 @@ USERKEYOK = 'csdn:user:ok'
 
 PROXY_FILE = 'proxy//proxy.txt'
 BLOGFILE_DIR = 'files/'
+
+MONGO_STR = 'mongodb://localhost:27017/'
