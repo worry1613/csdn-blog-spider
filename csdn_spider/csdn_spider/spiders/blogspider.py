@@ -68,27 +68,26 @@ class BlogSpider(Spider):
         # art['text'] = txt
         art['content'] = content
 
-        # dts = str(soup.find_all(class_="time")[0].getText()).strip()        #2017年10月19日 08:59:24
-        # dt = datetime.datetime.strptime(dts, "%Y年%m月%d日 %H:%M:%S")
-        # ts = int(time.mktime(dt.timetuple()))
-        # # read = int(soup.find_all(class_="read-count")[0].getText().strip()[4:])     # 阅读数：14438
-        # tags = []
-        # if len(soup.find_all(class_="tag-link"))>0:                 #tags 标签
-        #     for tag in soup.find_all(class_="tag-link"):
-        #         t = tag.getText().strip()
-        #         tags.append(t)
-        # original = 0                #原创 转载
-        # if len(soup.find_all(class_="article-type type-1 float-left"))>0:
-        #     if soup.find_all(class_="article-type type-1 float-left")[0].getText().strip() == '原':
-        #         original = 1
-        # art['time'] = ts
-        # # art['read'] = read
-        # art['tags'] = tags
-        # art['original'] = original
-        # yield art
+        dts = str(soup.find_all(class_="time")[0].getText()).strip()        #2017年10月19日 08:59:24
+        dt = datetime.datetime.strptime(dts, "%Y年%m月%d日 %H:%M:%S")
+        ts = int(time.mktime(dt.timetuple()))
+        # read = int(soup.find_all(class_="read-count")[0].getText().strip()[4:])     # 阅读数：14438
+        tags = []
+        if len(soup.find_all(class_="tag-link"))>0:                 #tags 标签
+            for tag in soup.find_all(class_="tag-link"):
+                t = tag.getText().strip()
+                tags.append(t)
+        original = 0                #原创 转载
+        if len(soup.find_all(class_="article-type type-1 float-left"))>0:
+            if soup.find_all(class_="article-type type-1 float-left")[0].getText().strip() == '原':
+                original = 1
+        art['time'] = ts
+        # art['read'] = read
+        art['tags'] = tags
+        art['original'] = original
+        yield art
 
         # 处理用户信息,加到userkey列表中，不做处理在user爬虫中再处理
-        ul = 'https://blog.csdn.net/%s' % (writer,)
         ok = r.sismember(USERKEY, writer)
         if ok is False:
             r.sadd(USERKEY, writer)
@@ -97,33 +96,16 @@ class BlogSpider(Spider):
         #处理博客内容下面的推荐列表
         users = []
         for u in soup.find_all(class_="recommend-item-box"):            #博客推荐
-            print(u.find_all('a')[0].get('href').split('/')[-1])
-            uid = u.find_all('a')[0].get('href').split('/')[3]
-            ok = r.sismember(USERKEY, uid)
+            url = u.find_all('a')[0].get('href')
+            uid = url.split('/')[3]
+            _id = url.split('/')[-1]
+
+            #统一去重策略
+            ok = r.sismember('csdn:user:%s' % (uid,), _id)
             if not ok:
-                p.lpush(USERKEY, uid)
-                # p.sadd(BLOGKEYOK, int(_id))
-
-        # for u in soup.find_all(class_="blog-expert-recommend-box"):            #用户推荐
-        #     print(u.find_all('a')[2].get('href').split('/')[-1])
-        #     users.append(u.find_all('a')[2].get('href').split('/')[-1])
-        #     url = 'https://blog.csdn.net/%s/article/GetRelatedArticles?pageindex=%d&articleId=%d' % (writer,i,_id)
-        #     yield Request(url=url, callback=self.parse_blog_down_list,  dont_filter=True)
-
-    def parse_blog_down_list(self, response):
-        #处理视频列表单页，不再跳转上下页
-        data = response.body
-        soup = BeautifulSoup(data, "html5lib")
-        # print soup.a
-        for a in soup.find_all('a'):
-            if 'blog.csdn.net' in a['href']:
-                _id = a['href'].split('/')[-1]
-                ok = r.sismember(ARTICLEKEYOK, int(_id))
-                if ok is False:
-                    p.lpush(ARTICLEKEY, a['href'])
-                    p.sadd(ARTICLEKEYOK, int(_id))
-                    logging.info('%s ==== %d ' % (a['href'], int(_id)))
-                else:
-                    logging.info('[[[[[[[[[[[ %s ==== %d  ' % (a['href'], int(_id)))
-                # print(a['href'])
-        p.execute()
+                p.sadd('csdn:user:%s' % (uid,), _id)
+                p.lpush(BLOGKEY, url)
+                logging.info('%s ==== %d ' % (url, int(_id)))
+            else:
+                logging.info('*********%s ==== %d ********** is ok ' % (url, int(_id)))
+            p.execute()
