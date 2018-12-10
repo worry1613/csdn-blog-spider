@@ -20,6 +20,7 @@ class CsdnSpiderItem(scrapy.Item):
     read = scrapy.Field()       #blog read
     content = scrapy.Field()    #blog main content
     writer = scrapy.Field()     #blog writer id
+    original = scrapy.Field()   #blog original content
 
 class CsdnSpiderUserItem(scrapy.Item):
     # define the fields for your item here like:
