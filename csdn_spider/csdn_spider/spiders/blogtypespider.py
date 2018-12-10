@@ -47,13 +47,13 @@ class BlogTypeSpider(Spider):
 
     def parse(self, response):
         """
-        """
-        #去重的策略
-        #url ---博客url
-        #id -- 博客id
-        #uid -- 博主id
-        #if id 不在 csdn:user:uid 集合里，把sadd csdn:user:uid id ，url 加到csdn:blog列表内
 
+        去重的策略
+        url ---博客url
+        id -- 博客id
+        uid -- 博主id
+        if id 不在 csdn:user:uid 集合里，把sadd csdn:user:uid id ，url 加到csdn:blog列表内
+        """
         bodyjs = json.loads(getresponsejson(response))
         # print(json.dumps(bodyjs, indent=4, ensure_ascii=False))
         category = response.request._url.split('=')[-1]
