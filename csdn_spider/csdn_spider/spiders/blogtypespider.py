@@ -6,9 +6,9 @@ import sys
 from scrapy.spiders import Spider
 from scrapy.http import Request
 import logging
-from settings import BLOGKEY, USERKEY, BLOGKEYOK, REDIS_HOST, REDIS_PORT, REDIS_DB, BLOGFILE_DIR
+from csdn_spider.settings import BLOGKEY, USERKEY, BLOGKEYOK, REDIS_HOST, REDIS_PORT, REDIS_DB, BLOGFILE_DIR
 from collections import defaultdict
-from util.util import getresponsejson
+from csdn_spider.util.util import getresponsejson
 
 # import urlparse
 reload(sys)
@@ -46,7 +46,14 @@ class BlogTypeSpider(Spider):
         super(BlogTypeSpider, self).__init__(*args, **kwargs)
 
     def parse(self, response):
-        #
+        """
+        """
+        #去重的策略
+        #url ---博客url
+        #id -- 博客id
+        #uid -- 博主id
+        #if id 不在 csdn:user:uid 集合里，把sadd csdn:user:uid id ，url 加到csdn:blog列表内
+
         bodyjs = json.loads(getresponsejson(response))
         # print(json.dumps(bodyjs, indent=4, ensure_ascii=False))
         category = response.request._url.split('=')[-1]
@@ -62,18 +69,20 @@ class BlogTypeSpider(Spider):
                 for article in articles:
                     # 处理博客内容
                     _id = article['id']
+                    uid = article['url'].split('/')[3]
                     f.write(article['url'] + '\n')
                     p.sadd('category:%s' % category, int(_id))
-                    ok = r.sismember(BLOGKEYOK, int(_id))
+                    #去重操作
+                    ok = r.sismember('csdn:user:%s' %(uid,), _id)
                     if not ok:
+                        p.sadd('csdn:user:%s' %(uid,),_id)
                         p.lpush(BLOGKEY, article['url'])
-                        # p.sadd(BLOGKEYOK, int(_id))
                         logging.info('%s ==== %d ' % (article['url'], int(_id)))
                     else:
                         logging.info('*********%s ==== %d ********** is ok ' % (article['url'], int(_id)))
+                    p.execute()
                 f.flush()
                 f.close()
-                p.execute()
                 yield Request(url=next_link, callback=self.parse, dont_filter=True)
 
             else:
