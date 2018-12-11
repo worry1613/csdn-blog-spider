@@ -22,23 +22,23 @@ sys.setdefaultencoding('utf8')
 
 from blogtypespider import r, p
 
-class BlogSpider(Spider):
-# class BlogSpider(RedisSpider):
+# class BlogSpider(Spider):
+class BlogSpider(RedisSpider):
     name = "blog"
     # allowed_domains = ["blog.csdn.net"]
-    # redis_key = BLOGKEY
-    start_urls = ['https://blog.csdn.net/Yt7589/article/details/84867706',
-                  'https://blog.csdn.net/mfcing/article/details/7330581',
-                  'https://blog.csdn.net/Bryan__/article/details/51229032',
-                  'https://blog.csdn.net/yang_daxia/article/details/84722469',
-                  'https://blog.csdn.net/xuexijiaqq3533076323/article/details/84718841',
-                  'https://blog.csdn.net/worryabout/article/details/79784838',
-                  'https://blog.csdn.net/G15738290530/article/details/51830464',
-                  'https://blog.csdn.net/u010046908/article/details/61916389',
-                  'https://blog.csdn.net/goldenfish1919/article/details/78280051',
-                  'https://blog.csdn.net/jiaoyangwm/article/details/79570864',
-                  'https://blog.csdn.net/Gupaoxueyuan/article/details/78994652',
-                  'https://blog.csdn.net/u010205879/article/details/79745194']
+    redis_key = BLOGKEY
+    # start_urls = ['https://blog.csdn.net/Yt7589/article/details/84867706',
+    #               'https://blog.csdn.net/mfcing/article/details/7330581',
+    #               'https://blog.csdn.net/Bryan__/article/details/51229032',
+    #               'https://blog.csdn.net/yang_daxia/article/details/84722469',
+    #               'https://blog.csdn.net/xuexijiaqq3533076323/article/details/84718841',
+    #               'https://blog.csdn.net/worryabout/article/details/79784838',
+    #               'https://blog.csdn.net/G15738290530/article/details/51830464',
+    #               'https://blog.csdn.net/u010046908/article/details/61916389',
+    #               'https://blog.csdn.net/goldenfish1919/article/details/78280051',
+    #               'https://blog.csdn.net/jiaoyangwm/article/details/79570864',
+    #               'https://blog.csdn.net/Gupaoxueyuan/article/details/78994652',
+    #               'https://blog.csdn.net/u010205879/article/details/79745194']
 
     def __init__(self, *args, **kwargs):
         # Dynamically define the allowed domains list.
