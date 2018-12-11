@@ -6,7 +6,7 @@ import sys
 from scrapy.spiders import Spider
 from scrapy.http import Request
 import logging
-from csdn_spider.settings import BLOGKEY, USERKEY, BLOGKEYOK, REDIS_HOST, REDIS_PORT, REDIS_DB, BLOGFILE_DIR
+from csdn_spider.settings import BLOGKEY, USERKEY, BLOGKEYOK, REDIS_HOST, REDIS_PORT, REDIS_DB, BLOGFILE_DIR, REDIS_PWD
 from collections import defaultdict
 from csdn_spider.util.util import getresponsejson
 
@@ -17,7 +17,7 @@ sys.setdefaultencoding('utf8')
 import hiredis
 import redis
 
-pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, password=REDIS_PWD)
 r = redis.StrictRedis(connection_pool=pool)
 p = r.pipeline()
 
