@@ -77,7 +77,7 @@ class BlogTypeSpider(Spider):
                     uok = r.keys('csdn:user:%s' %(uid,))
                     if not ok:
                         p.sadd('csdn:user:%s' %(uid,),_id)
-                        if not uok:
+                        if not len(uok):
                             p.lpush(USERKEY, 'https://blog.csdn.net/%s' % (uid,))
                         p.lpush(BLOGKEY, article['url'])
                         logging.info('%s ==== %s ' % (article['url'], _id))

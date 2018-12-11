@@ -102,7 +102,7 @@ class BlogSpider(RedisSpider):
                 uok = r.keys('csdn:user:%s' % (uid,))
                 if not ok:
                     p.sadd('csdn:user:%s' % (uid,), _id)
-                    if not uok:
+                    if not len(uok):
                         p.lpush(USERKEY, 'https://blog.csdn.net/%s' % (uid,))
                     p.lpush(BLOGKEY, url)
                     logging.info('%s ==== %s ' % (url, _id))
