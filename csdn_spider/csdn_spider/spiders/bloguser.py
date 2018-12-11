@@ -59,7 +59,7 @@ class BlogUserSpider(RedisSpider):
 
         for url in urls:
             u = url.find('a').get('href')
-            print(u)
+            # print(u)
             bs = u.split('/')
             bid = bs[-1]
             uid = bs[3]

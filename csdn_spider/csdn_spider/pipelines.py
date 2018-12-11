@@ -75,6 +75,6 @@ class CsdnSpiderPipelineMongo(object):
 
             ret = blogt.insert({'bid':_id,'title':encode(title),'uid':writer,'tags':tags,
                           'time':time,'content':encode(str(content)),'original':original})
-            print(ret)
+            # print(ret)
 
         return ''
