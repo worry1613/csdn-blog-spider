@@ -65,9 +65,12 @@ class BlogUserSpider(RedisSpider):
             uid = bs[3]
             # 统一去重策略
             ok = r.sismember('csdn:user:%s' % (uid,), bid)
+            uok = r.keys('csdn:user:%s' % (uid,))
             if not ok:
                 p.sadd('csdn:user:%s' % (uid,), bid)
-                p.lpush(BLOGKEY, url)
+                if not uok:
+                    p.lpush(USERKEY, 'https://blog.csdn.net/%s' % (uid,))
+                p.lpush(BLOGKEY, u)
                 logging.info('%s ==== %d ' % (u, int(bid)))
             else:
                 logging.info('*********%s ==== %d ********** is ok ' % (u, int(bid)))

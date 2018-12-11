@@ -74,12 +74,15 @@ class BlogTypeSpider(Spider):
                     p.sadd('category:%s' % category, int(_id))
                     #去重操作
                     ok = r.sismember('csdn:user:%s' %(uid,), _id)
+                    uok = r.keys('csdn:user:%s' %(uid,))
                     if not ok:
                         p.sadd('csdn:user:%s' %(uid,),_id)
+                        if not uok:
+                            p.lpush(USERKEY, 'https://blog.csdn.net/%s' % (uid,))
                         p.lpush(BLOGKEY, article['url'])
-                        logging.info('%s ==== %d ' % (article['url'], int(_id)))
+                        logging.info('%s ==== %s ' % (article['url'], _id))
                     else:
-                        logging.info('*********%s ==== %d ********** is ok ' % (article['url'], int(_id)))
+                        logging.info('*********%s ==== %s ********** is ok ' % (article['url'], _id))
                     p.execute()
                 f.flush()
                 f.close()
