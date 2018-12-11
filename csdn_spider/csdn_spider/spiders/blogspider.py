@@ -85,7 +85,7 @@ class BlogSpider(RedisSpider):
 
         # 处理用户信息,加到userkey列表中，不做处理在user爬虫中再处理
         ok = r.keys('csdn:user:%s' % (writer,))
-        if not ok:
+        if not len(ok):
             r.lpush(USERKEY, 'https://blog.csdn.net/%s' % (writer,))
             logging.info('user--%s ======' % (writer,))
 
