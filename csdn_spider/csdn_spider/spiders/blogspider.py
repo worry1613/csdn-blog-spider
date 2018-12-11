@@ -84,9 +84,9 @@ class BlogSpider(RedisSpider):
         yield art
 
         # 处理用户信息,加到userkey列表中，不做处理在user爬虫中再处理
-        ok = r.sismember(USERKEY, writer)
-        if ok is False:
-            r.sadd(USERKEY, writer)
+        ok = r.keys('csdn:user:%s' % (writer,))
+        if not ok:
+            r.lpush(USERKEY, 'https://blog.csdn.net/%s' % (writer,))
             logging.info('user--%s ======' % (writer,))
 
         #处理博客内容下面的推荐列表
