@@ -87,21 +87,25 @@ class BlogSpider(RedisSpider):
         ok = r.sismember(USERKEY, writer)
         if ok is False:
             r.sadd(USERKEY, writer)
-            logging.info('user--%s ======' % (writer))
+            logging.info('user--%s ======' % (writer,))
 
         #处理博客内容下面的推荐列表
         users = []
         for u in soup.find_all(class_="recommend-item-box"):            #博客推荐
-            url = u.find_all('a')[0].get('href')
-            uid = url.split('/')[3]
-            _id = url.split('/')[-1]
+            if u.find_all('a'):
+                url = u.find_all('a')[0].get('href')
+                uid = url.split('/')[3]
+                _id = url.split('/')[-1]
 
-            #统一去重策略
-            ok = r.sismember('csdn:user:%s' % (uid,), _id)
-            if not ok:
-                p.sadd('csdn:user:%s' % (uid,), _id)
-                p.lpush(BLOGKEY, url)
-                logging.info('%s ==== %d ' % (url, int(_id)))
-            else:
-                logging.info('*********%s ==== %d ********** is ok ' % (url, int(_id)))
-            p.execute()
+                #统一去重策略
+                ok = r.sismember('csdn:user:%s' % (uid,), _id)
+                uok = r.keys('csdn:user:%s' % (uid,))
+                if not ok:
+                    p.sadd('csdn:user:%s' % (uid,), _id)
+                    if not uok:
+                        p.lpush(USERKEY, 'https://blog.csdn.net/%s' % (uid,))
+                    p.lpush(BLOGKEY, url)
+                    logging.info('%s ==== %s ' % (url, _id))
+                else:
+                    logging.info('*********%s ==== %s ********** is ok ' % (url, _id))
+                p.execute()
