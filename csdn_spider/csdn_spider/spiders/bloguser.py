@@ -21,18 +21,18 @@ sys.setdefaultencoding('utf8')
 
 from blogtypespider import r, p
 
-# class BlogUserSpider(RedisSpider):
-class BlogUserSpider(Spider):
+class BlogUserSpider(RedisSpider):
+# class BlogUserSpider(Spider):
     name = "bloguser"
     # allowed_domains = ["blog.csdn.net"]
     redis_key = USERKEY
-    start_urls = ['https://blog.csdn.net/qq_41841569',
-                  'https://blog.csdn.net/Mprog',
-                  'https://blog.csdn.net/yihanzhi',
-                  'https://blog.csdn.net/Cymbals',
-                  'https://blog.csdn.net/xiuya19',
-                  'https://blog.csdn.net/u5a75',
-                  'https://blog.csdn.net/u011263983/']
+    # start_urls = ['https://blog.csdn.net/qq_41841569',
+    #               'https://blog.csdn.net/Mprog',
+    #               'https://blog.csdn.net/yihanzhi',
+    #               'https://blog.csdn.net/Cymbals',
+    #               'https://blog.csdn.net/xiuya19',
+    #               'https://blog.csdn.net/u5a75',
+    #               'https://blog.csdn.net/u011263983/']
 
     def __init__(self, *args, **kwargs):
         # Dynamically define the allowed domains list.
@@ -47,11 +47,16 @@ class BlogUserSpider(Spider):
         :return:
         """
         logging.info(response.url)
+        try:
+            page = int(response.url.split('/')[-1])
+        except :
+            page = 1
         data = response.body
         soup = BeautifulSoup(data, "html5lib")
-        pages = soup.find_all(class_='ui-pager')
+        # pages = soup.find_all(class_='ui-pager')
 
         urls = soup.find_all(class_='article-item-box')
+
         for url in urls:
             u = url.find('a').get('href')
             print(u)
@@ -63,10 +68,21 @@ class BlogUserSpider(Spider):
             if not ok:
                 p.sadd('csdn:user:%s' % (uid,), bid)
                 p.lpush(BLOGKEY, url)
-                logging.info('%s ==== %d ' % (url, int(bid)))
+                logging.info('%s ==== %d ' % (u, int(bid)))
             else:
-                logging.info('*********%s ==== %d ********** is ok ' % (url, int(bid)))
+                logging.info('*********%s ==== %d ********** is ok ' % (u, int(bid)))
             p.execute()
+        lens = len(urls)
+        if lens > 20:
+            page +=1
+            if 'article' in response.url:
+                s = response.url.split('/')
+                s[-1] = str(page)
+                url = '/'.join(s)
+            else:
+                url = response.url + '/article/list/%d' % (page,)
+
+            yield Request(url=url, callback=self.parse, dont_filter=True)
 
 
 
