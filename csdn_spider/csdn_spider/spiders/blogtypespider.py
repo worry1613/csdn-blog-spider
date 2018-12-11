@@ -17,7 +17,7 @@ sys.setdefaultencoding('utf8')
 import hiredis
 import redis
 
-pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, password=REDIS_PWD)
+pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 r = redis.StrictRedis(connection_pool=pool)
 p = r.pipeline()
 
